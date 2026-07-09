@@ -3,17 +3,23 @@
 #ifndef RAGE_TIMER_H
 #define RAGE_TIMER_H
 
+#include <cstdint>
+#include <utility>
+
 class RageTimer
 {
 public:
-	RageTimer(): m_secs(0), m_us(0) { Touch(); }
-	RageTimer( int secs, int us ): m_secs(secs), m_us(us) { }
+
+	using TimePair = std::pair<uint64_t, uint64_t>; // first = seconds, second = microseconds
+
+	RageTimer(): m_pair{0, 0} { Touch(); }
+	RageTimer( int secs, int us ): m_pair{static_cast<uint64_t>(secs), static_cast<uint64_t>(us)} { }
 
 	/* Time ago this RageTimer represents. */
 	float Ago() const;
 	void Touch();
-	inline bool IsZero() const { return m_secs == 0 && m_us == 0; }
-	inline void SetZero() { m_secs = m_us = 0; }
+	inline bool IsZero() const { return m_pair.first == 0 && m_pair.second == 0; }
+	inline void SetZero() { m_pair.first = m_pair.second = 0; }
 
 	/* Time between last call to GetDeltaTime() (Ago() + Touch()): */
 	float GetDeltaTime();
@@ -23,6 +29,7 @@ public:
 	/* deprecated: */
 	static float GetTimeSinceStart( bool bAccurate = true );	// seconds since the program was started
 	static float GetTimeSinceStartFast() { return GetTimeSinceStart(false); }
+	static int GetTimeSinceStartSeconds();
 	static uint64_t GetUsecsSinceStart();
 
 	/* Get a timer representing half of the time ago as this one. */
@@ -43,7 +50,7 @@ public:
 	 * several days, we'll lose a lot of resolution.  I don't want to use double
 	 * everywhere, since it's slow.  I'd rather not use double just for RageTimers, since
 	 * it's too easy to get a type wrong and end up with obscure resolution problems. */
-	unsigned m_secs, m_us;
+	TimePair m_pair; // m_pair.first = seconds, m_pair.second = microseconds
 
 private:
 	static RageTimer Sum( const RageTimer &lhs, float tm );
