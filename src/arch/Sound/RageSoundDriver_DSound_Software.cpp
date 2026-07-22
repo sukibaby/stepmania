@@ -10,7 +10,9 @@
 
 #include <cstdint>
 
+// clang-format off
 REGISTER_SOUND_DRIVER_CLASS2( DirectSound-sw, DSound_Software );
+// clang-format on
 
 static const int channels = 2;
 static const int bytes_per_frame = channels*2; /* 16-bit */
