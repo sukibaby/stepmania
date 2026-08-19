@@ -19,8 +19,7 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y libasound2-dev libgl-dev libglu1-mesa-dev libgtk-3-dev libjack-dev libmad0-dev libpulse-dev libudev-dev libxinerama-dev libx11-dev libxrandr-dev libxtst-dev nasm
       - name: Create full release
-        if: "!contains(github.ref_name, '-beta')"
-        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DWITH_FULL_RELEASE=On
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DWITH_FULL_RELEASE=On -DWITH_NIGHTLY_RELEASE=Off
       - name: Create package
         id: package
         run: cmake --build build --target package
@@ -28,12 +27,12 @@ jobs:
         id: upload
         uses: actions/upload-artifact@v7
         with:
-          name: StepMania-${{ github.sha }}-Ubuntu (x86_64)
+          name: StepMania-${{ github.ref_name }}-Ubuntu (x86_64)
           path: build/StepMania-*.tar.gz
           archive: false
       - uses: actions/attest@v4
         with:
-          subject-name: StepMania-${{ github.sha }}-Ubuntu (x86_64)
+          subject-name: StepMania-${{ github.ref_name }}-Ubuntu (x86_64)
           subject-digest: sha256:${{ steps.upload.outputs.artifact-digest }}
 
   build-ubuntu-arm:
@@ -47,10 +46,9 @@ jobs:
         with:
           submodules: recursive
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y libasound2-dev libgl-dev libglu1-mesa-dev libgtk-3-dev libjack-dev libmad0-dev libpulse-dev libudev-dev libxinerama-dev libx11-dev libxrandr-dev libxtst-dev nasm
+        run: sudo apt-get update && sudo apt-get install -y libasound2-dev libgl-dev libglu1-mesa-dev libgtk-3-dev libjack-dev libmad0-dev libpulse-dev libudev-dev libxinerama-dev libx11-dev libxrandr-dev libxtst-dev libusb-1.0-0-dev libusb-dev nasm
       - name: Create full release
-        if: "!contains(github.ref_name, '-beta')"
-        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DWITH_FULL_RELEASE=On -DWITH_NIGHTLY_RELEASE=Off -DWITH_CLUB_FANTASTIC=Off
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DWITH_FULL_RELEASE=On -DWITH_NIGHTLY_RELEASE=Off
       - name: Create package
         id: package
         run: cmake --build build --target package
@@ -58,12 +56,12 @@ jobs:
         id: upload
         uses: actions/upload-artifact@v7
         with:
-          name: StepMania-${{ github.sha }}-Ubuntu (ARM)
+          name: StepMania-${{ github.ref_name }}-Ubuntu (ARM)
           path: build/StepMania-*.tar.gz
           archive: false
       - uses: actions/attest@v4
         with:
-          subject-name: StepMania-${{ github.sha }}-Ubuntu (ARM)
+          subject-name: StepMania-${{ github.ref_name }}-Ubuntu (ARM)
           subject-digest: sha256:${{ steps.upload.outputs.artifact-digest }}
 
   build-macos-arm:
@@ -79,7 +77,6 @@ jobs:
       - name: Install dependencies
         run: brew install nasm
       - name: Create full release
-        if: "!contains(github.ref_name, '-beta')"
         run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DWITH_FULL_RELEASE=On -DWITH_NIGHTLY_RELEASE=Off -DCMAKE_OSX_ARCHITECTURES=arm64
       - name: Create package
         id: package
@@ -88,12 +85,12 @@ jobs:
         id: upload
         uses: actions/upload-artifact@v7
         with:
-          name: StepMania-${{ github.sha }}-macOS (arm64)
+          name: StepMania-${{ github.ref_name }}-macOS (arm64)
           path: build/StepMania-*.dmg
           archive: false
       - uses: actions/attest@v4
         with:
-          subject-name: StepMania-${{ github.sha }}-macOS (arm64)
+          subject-name: StepMania-${{ github.ref_name }}-macOS (arm64)
           subject-digest: sha256:${{ steps.upload.outputs.artifact-digest }}
 
   build-macos-intel:
@@ -109,7 +106,6 @@ jobs:
       - name: Install dependencies
         run: brew install nasm
       - name: Create full release
-        if: "!contains(github.ref_name, '-beta')"
         run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DWITH_FULL_RELEASE=On -DWITH_NIGHTLY_RELEASE=Off -DCMAKE_OSX_ARCHITECTURES=x86_64
       - name: Create package
         id: package
@@ -118,12 +114,12 @@ jobs:
         id: upload
         uses: actions/upload-artifact@v7
         with:
-          name: StepMania-${{ github.sha }}-macOS (Intel)
-          path: build/StepMania-*-NIGHTLY-git-*-macOS-Intel-no-songs.dmg
+          name: StepMania-${{ github.ref_name }}-macOS (Intel)
+          path: build/StepMania-*-macOS-Intel-no-songs.dmg
           archive: false
       - uses: actions/attest@v4
         with:
-          subject-name: StepMania-${{ github.sha }}-macOS (Intel)
+          subject-name: StepMania-${{ github.ref_name }}-macOS (Intel)
           subject-digest: sha256:${{ steps.upload.outputs.artifact-digest }}
 
   build-windows:
@@ -141,7 +137,6 @@ jobs:
         with:
           msbuild-architecture: x64
       - name: Create full release
-        if: "!contains(github.ref_name, '-beta')"
         run: cmake -B build -DWITH_FFMPEG_JOBS="$env:NUMBER_OF_PROCESSORS" -DWITH_FULL_RELEASE=On -DWITH_NIGHTLY_RELEASE=Off
       - name: Create package
         id: package
@@ -150,10 +145,10 @@ jobs:
         id: upload
         uses: actions/upload-artifact@v7
         with:
-          name: StepMania-${{ github.sha }}-Windows
+          name: StepMania-${{ github.ref_name }}-Windows
           path: build/StepMania-*.exe
           archive: false
       - uses: actions/attest@v4
         with:
-          subject-name: StepMania-${{ github.sha }}-Windows
+          subject-name: StepMania-${{ github.ref_name }}-Windows
           subject-digest: sha256:${{ steps.upload.outputs.artifact-digest }}
