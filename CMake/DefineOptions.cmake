@@ -63,5 +63,6 @@ if(LINUX)
   option(WITH_X11 "Build with X11 support" ON)
 endif()
 
+option(WITH_PACDRIVE "Build with PacDrive lights driver support. Requires libusb 0.1." OFF)
 option(WITH_MINIMAID "Build with Minimaid support." ON)
 
