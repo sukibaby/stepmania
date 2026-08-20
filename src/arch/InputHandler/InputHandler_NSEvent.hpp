@@ -14,9 +14,13 @@
 
 #if __OBJC__
 #   import <Cocoa/Cocoa.h>
-#   define EVENT_TYPE NSEvent *
+#   ifndef EVENT_TYPE
+#       define EVENT_TYPE NSEvent *
+#   endif
 #else
-#   define EVENT_TYPE void *
+#   ifndef EVENT_TYPE
+#       define EVENT_TYPE void *
+#   endif
 #endif
 
 class InputHandler_NSEvent : public InputHandler
