@@ -4,6 +4,7 @@
 #include <functional>
 #include <vector>
 
+#include "global.h"
 #include "RageThreads.h"
 
 #if __OBJC__
